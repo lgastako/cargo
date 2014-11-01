@@ -26,9 +26,9 @@ but I don't feel like hunting for it:
     Copying: /etc/mime.types
          to: /root/src/quickhack/mime.types
 
-You can use relative paths with "cargo from", like "cargo from .." but for
+You can use relative paths with `cargo from`, like `cargo from ..` but for
 longer paths if you know you want to search within the subtree 5 levels up,
-instead of having to type "cargo from ../../../../.. file" you can use the "up"
+instead of having to type `cargo from ../../../../.. file` you can use the "up"
 shortcut:
 
     /Users/john/src/new-web-project/a/b/c/d $ cargo up 4 mime.types
