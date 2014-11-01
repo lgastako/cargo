@@ -40,4 +40,4 @@ gs: godep-save
 i: install
 r: run
 
-.PHONY: build dependency-install godep-install godep-save install run
+.PHONY: all build clean distclean dependency-install godep-install godep-save install run

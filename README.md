@@ -37,6 +37,11 @@ shortcut:
     Copying: /Users/john/src/new-web-project/mime.types
          to: /Users/john/src/new-web-project/a/b/c/d/mime.types
 
+## Install
+
+For now:
+
+    make dependency-install install INSTALL_DIR=/usr/local/bin
 
 ## Bugs
 
