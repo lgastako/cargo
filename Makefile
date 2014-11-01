@@ -13,9 +13,11 @@ godep-save:
 build:
 	go build .
 
-
+run:
+	./cargo cult bootstrap.min.js
 
 b: build
 di: dependency-install
 gi: godep-install
 gs: godep-save
+r: run
