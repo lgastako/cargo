@@ -180,13 +180,11 @@ func upFinder(args map[string]interface{}) (string, error) {
 	}
 
 	for i := 0; i < levels; i++ {
-		dir, _ := path.Split(dir)
-		fmt.Printf("1 => %v\n", dir)
-		dir = dir[0 : len(dir)-2]
-		fmt.Printf("2 => %v\n", dir)
+		dir, _ = path.Split(dir)
+		dir = dir[0 : len(dir)-1]
 	}
 
-	return "", nil
+	return dir, nil
 }
 
 func finderFromArgs(args map[string]interface{}) Finder {
@@ -197,8 +195,8 @@ func finderFromArgs(args map[string]interface{}) Finder {
 	}
 
 	for cmd, finder := range finders {
-		_, ok := args[cmd]
-		if ok {
+		val, ok := args[cmd]
+		if ok && val.(bool) {
 			return finder
 		}
 	}
@@ -217,9 +215,8 @@ Usage:
   cargo --version
 
 Options:
-  -h --help           Show this screen.
-  -e --early-out=<n>  Short-circuit at <n> identical copies.
-  --version           Show version.`
+  -h --help      Show this screen.
+  --version      Show version.`
 
 	args, _ := docopt.Parse(usage, nil, true, "cargo 0.1", false)
 
@@ -234,6 +231,11 @@ Options:
 
 	if err != nil {
 		fmt.Printf("Error: %v\n", err)
+		return
+	}
+
+	if dir == "" {
+		fmt.Println("Unexpected error.  How embarassing.")
 		return
 	}
 
