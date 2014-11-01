@@ -159,16 +159,14 @@ func finderFromArgs(args map[string]interface{}) Finder {
 		"up":   upFinder,
 	}
 
-	var finder Finder
-	for k := range finders {
-		var ok bool
-		finder, ok = finders[k]
-
+	for cmd, finder := range finders {
+		_, ok := args[cmd]
 		if ok {
-			break
+			return finder
 		}
 	}
-	return finder
+
+	return nil
 }
 
 func main() {
@@ -178,7 +176,6 @@ Usage:
   cargo at <dir> <filename>...
   cargo from <dir> <filename>...
   cargo up <levels> <filename>...
-  cargo
   cargo -h | --help
   cargo --version
 
