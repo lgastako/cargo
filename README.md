@@ -51,3 +51,8 @@ shortcut:
 - Add "--confirm" or "--dry-run" or something.
 - Add "--move" option
 - Globs instead of exact filenames
+
+
+## License
+
+Cargo is licensed under the MIT License.
