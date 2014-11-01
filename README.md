@@ -26,16 +26,19 @@ but I don't feel like hunting for it:
     Copying: /etc/mime.types
          to: /root/src/quickhack/mime.types
 
-You can use relative paths with `cargo from`, like `cargo from ..` but for
-longer paths if you know you want to search within the subtree 5 levels up,
-instead of having to type `cargo from ../../../../.. file` you can use the "up"
-shortcut:
+You can use relative paths with `cargo from`, like `cargo from ..` if you like.
+But for longer paths, if you already know you want to search within the subtree
+5 levels up, the relatively cumbersome `cargo from ../../../../.. file` can be
+avoided via the "up" shortcut:
 
-    /Users/john/src/new-web-project/a/b/c/d $ cargo up 4 mime.types
+    /Users/john/src/new-web-project/a/b/c/d/e $ cargo up 5 mime.types
     Searching under: /Users/john/src/new-web-project
                 for: [mime.types]
     Copying: /Users/john/src/new-web-project/mime.types
-         to: /Users/john/src/new-web-project/a/b/c/d/mime.types
+         to: /Users/john/src/new-web-project/a/b/c/d/e/mime.types
+
+(Of course in this situation, I would probably still just "cargo within src"
+instead, but you get the idea).
 
 ## Install
 
