@@ -11,8 +11,8 @@ import (
 	docopt "github.com/docopt/docopt-go"
 )
 
-func stringDropFromLast(s, sep string) string {
-	lastIndex := strings.LastIndex(s, sep)
+func parentDir(s string) string {
+	lastIndex := strings.LastIndex(s, "/")
 
 	if lastIndex == -1 {
 		return s
@@ -28,13 +28,12 @@ type Candidate struct {
 }
 
 func (c *Candidate) copyTo(dir string) error {
-	fmt.Printf("Candidate :: %v\n", c)
 	dst := path.Join(dir, c.name)
 	return copyFileContents(c.path, dst)
 }
 
 func cult(filename string) error {
-	fmt.Printf("mindlessly cloning %v\n", filename)
+	fmt.Printf("Searching for '%v' to clone ...\n", filename)
 
 	cwd, err := os.Getwd()
 
@@ -42,20 +41,17 @@ func cult(filename string) error {
 		return err
 	}
 
-	root := stringDropFromLast(cwd, "/")
+	root := parentDir(cwd)
 
 	candidates := map[int64]Candidate{}
 	counts := map[int64]int{}
 
 	updateCounts := func(c Candidate) {
-		fmt.Printf("Updating counts for: %v\n", c)
 		count, ok := counts[c.size]
 
 		if !ok {
-			fmt.Printf("No existing count, so starting at 0.")
 			count = 0
 		}
-		fmt.Printf("Current count: %v\n", count)
 
 		count = count + 1
 		counts[c.size] = count
@@ -63,8 +59,6 @@ func cult(filename string) error {
 
 	absorb := func(path string, info os.FileInfo, err error) error {
 		if info.Name() == filename {
-			fmt.Printf("Found one: %v\n", path)
-
 			size := info.Size()
 
 			c := Candidate{
@@ -122,8 +116,11 @@ Options:
   -h --help     Show this screen.
   --version     Show version.`
 
+	fmt.Println("BEFORE OPT")
+
 	args, _ := docopt.Parse(usage, nil, true, "cargo 0.1", false)
 
+	fmt.Println("BEFORE ARGS")
 	if _, ok := args["cult"]; ok {
 		filenames := args["<filename>"].([]string)
 
@@ -133,5 +130,7 @@ Options:
 				log.Printf("Failure on filename '%v': %v\n", filename, err)
 			}
 		}
+	} else {
+		fmt.Println(args)
 	}
 }

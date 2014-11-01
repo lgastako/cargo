@@ -1,11 +1,13 @@
 INSTALL_DIR=~/local/bin
 
+SRCS = cargo.go copy.go
+
 all:
 	@cat Makefile
 
 build: cargo
 
-cargo:
+cargo: $(SRCS)
 	go build .
 
 clean:
@@ -20,7 +22,9 @@ godep-install:
 godep-save:
 	godep save
 
-install: cargo
+install: $(INSTALL_DIR)/cargo
+
+$(INSTALL_DIR)/cargo: cargo
 	cp cargo $(INSTALL_DIR)
 
 run:
