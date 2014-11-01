@@ -13,6 +13,9 @@ cargo: $(SRCS)
 clean:
 	\rm -rf cargo
 
+distclean: clean
+	\rm -rf Godeps/_workspace
+
 dependency-install:
 	go get ./...
 
