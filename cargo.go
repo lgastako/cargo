@@ -131,12 +131,12 @@ func cult(root string, filenames []string) error {
 	return nil
 }
 
-func atFinder(args map[string]interface{}) (string, error) {
+func fromFinder(args map[string]interface{}) (string, error) {
 	dir := args["<dir>"].(string)
 	return dir, nil
 }
 
-func fromFinder(args map[string]interface{}) (string, error) {
+func withinFinder(args map[string]interface{}) (string, error) {
 	dir := args["<dir>"].(string)
 
 	cwd, err := os.Getwd()
@@ -189,9 +189,9 @@ func upFinder(args map[string]interface{}) (string, error) {
 
 func finderFromArgs(args map[string]interface{}) Finder {
 	finders := FinderMap{
-		"at":   atFinder,
-		"from": fromFinder,
-		"up":   upFinder,
+		"from":   fromFinder,
+		"up":     upFinder,
+		"within": withinFinder,
 	}
 
 	for cmd, finder := range finders {
@@ -208,9 +208,9 @@ func main() {
 	usage := `cargo.
 
 Usage:
-  cargo at <dir> <filename>...
   cargo from <dir> <filename>...
   cargo up <levels> <filename>...
+  cargo within <dir> <filename>...
   cargo -h | --help
   cargo --version
 

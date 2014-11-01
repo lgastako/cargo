@@ -1,4 +1,4 @@
-INSTALL_DIR=~/local/bin
+INSTALL_DIR=~/go/bin
 
 SRCS = cargo.go copy.go
 
