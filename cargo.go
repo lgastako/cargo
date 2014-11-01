@@ -25,65 +25,57 @@ func (c *Candidate) copyTo(dir string) error {
 	return copyFileContents(c.path, dst)
 }
 
+func (c *Candidate) pretty() string {
+	return fmt.Sprintf("path[%v] name[%v] size[%v]", c.path, c.name, c.size)
+}
+
 func cult(root string, filenames []string) error {
 	fmt.Printf("Searching under: %v\n", root)
 	fmt.Printf("            for: %v\n", filenames)
 
-	candidates := map[int64]Candidate{}
-	counts := map[int64]int{}
+	candidates := map[string]map[int64]Candidate{}
+	counts := map[string]map[int64]int{}
 
-	updateCounts := func(c Candidate) {
-		count, ok := counts[c.size]
+	updateCount := func(fn string, c Candidate) {
+		fnCounts, ok := counts[fn]
+		if !ok {
+			counts[fn] = make(map[int64]int)
+			fnCounts, _ = counts[fn]
+		}
+
+		count, ok := fnCounts[c.size]
 
 		if !ok {
 			count = 0
 		}
 
 		count = count + 1
-		counts[c.size] = count
+		fnCounts[c.size] = count
 	}
 
 	absorb := func(path string, info os.FileInfo, err error) error {
 		for _, filename := range filenames {
 			if info.Name() == filename {
-				size := info.Size()
-
 				c := Candidate{
 					path: path,
 					name: info.Name(),
-					size: size,
+					size: info.Size(),
 				}
 
-				candidates[c.size] = c
-				updateCounts(c)
+				fnCandidates, ok := candidates[filename]
+
+				if !ok {
+					candidates[filename] = make(map[int64]Candidate)
+					fnCandidates, _ = candidates[filename]
+				}
+
+				fnCandidates[c.size] = c
+				updateCount(filename, c)
 			}
 		}
 
 		return nil
 	}
-
-	err := filepath.Walk(root, absorb)
-
-	if err != nil {
-		return err
-	}
-
-	highest := -1
-	best := int64(-1)
-
-	for size, count := range counts {
-		if count > highest {
-			highest = count
-			best = size
-		}
-	}
-
-	if highest == -1 {
-		fmt.Printf("Somehow we found no highest count.  Maybe there were no matches at all?")
-		return nil
-	}
-
-	winner := candidates[best]
 
 	cwd, err := os.Getwd()
 
@@ -91,7 +83,52 @@ func cult(root string, filenames []string) error {
 		return err
 	}
 
-	return winner.copyTo(cwd)
+	err = filepath.Walk(root, absorb)
+
+	if err != nil {
+		return err
+	}
+
+	for _, filename := range filenames {
+		highest := -1
+		best := int64(-1)
+
+		fnCounts, ok := counts[filename]
+		if !ok {
+			fmt.Printf("No qualifying candidates for: %v\n", filename)
+			continue
+		}
+
+		for size, count := range fnCounts {
+			if count > highest {
+				highest = count
+				best = size
+			}
+		}
+
+		if highest == -1 {
+			fmt.Printf("No matches found for filename: %v\n", filename)
+		} else {
+			fnCandidates, ok := candidates[filename]
+			if !ok {
+				panic("wtf1")
+			}
+
+			winner, ok := fnCandidates[best]
+
+			if !ok {
+				panic("Wtf2")
+			}
+
+			err := winner.copyTo(cwd)
+
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
 }
 
 func atFinder(args map[string]interface{}) (string, error) {
