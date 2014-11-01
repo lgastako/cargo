@@ -17,6 +17,10 @@ So, if I were to start a new one I might do something like this:
     Copying: /Users/john/src/whisper/static/js/jquery.min.js
          to: /Users/john/src/new-web-project/jquery.min.js
 
+Cargo will automatically search the entire directory tree specified (in this
+case /Users/john/src) and find all copies of any files you want.  It then
+selects the most common version of each file using file size.
+
 Or maybe I know I have one and only one `mime.types` file somewhere under etc
 but I don't feel like hunting for it:
 
@@ -58,6 +62,7 @@ For now:
 - Add "--ignore-errors" or similar to keep going when a copy fails
 - Add "--confirm" or "--dry-run" or something.
 - Add "--move" option
+- Add "--md5" option to be more accurate than size (but slower).
 - Globs instead of exact filenames
 
 
