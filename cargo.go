@@ -148,14 +148,15 @@ func withinFinder(args map[string]interface{}) (string, error) {
 	d := cwd
 	for true {
 		parentDir, fn := path.Split(d)
-		// TODO: parentDir[0:-1] ?
+		parentDir = parentDir[0 : len(parentDir)-1]
 
 		if parentDir == d {
+			fmt.Println("parentDir == d... break!")
 			break
 		}
 
 		if fn == dir {
-			return parentDir, nil
+			return d, nil
 		}
 
 		d = parentDir
